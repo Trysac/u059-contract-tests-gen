@@ -4,12 +4,11 @@
 [![License: MIT](https://img.shields.io/pypi/l/trysac-contract-tests-gen)](LICENSE)
 [![CI](https://github.com/Trysac/u059-contract-tests-gen/actions/workflows/ci.yml/badge.svg)](https://github.com/Trysac/u059-contract-tests-gen/actions/workflows/ci.yml)
 
-Generate readable pytest contract tests from an OpenAPI 3.x document, injection-safe, with a small schema validator, injectable transport and drift check
+Generate readable pytest contract tests from an OpenAPI 3.x document, injection-safe, with a small schema validator, injectable transport and drift check.
 
 ## Problem
 
-Describe in two or three sentences the concrete problem this utility solves, who hits it, and what
-they do today without it. Replace this paragraph when the first real feature lands.
+Contract drift between an API and its OpenAPI document is usually discovered by clients in production. Property-based tools can find it but are heavy and leave no reviewable artifact. contract-tests-gen generates plain pytest files from the spec, giving a committed, readable suite that CI can regenerate and diff.
 
 ## Install
 
@@ -19,22 +18,34 @@ pip install trysac-contract-tests-gen
 uv add trysac-contract-tests-gen
 ```
 
-Requires Python 3.10 or newer. No runtime dependencies.
+Requires Python 3.10 or newer. Runtime dependency: PyYAML >= 6.0, < 7.
 
 ## Usage
 
 ```python
-import contract_tests_gen
+from pathlib import Path
+from contract_tests_gen import extract_cases, load_spec, render_module
 
-# normalize() trims surrounding whitespace and lower-cases the text.
-print(contract_tests_gen.normalize("  Hello World "))  # -> "hello world"
-
-# Blank input is rejected explicitly instead of returning an empty string.
-try:
-    contract_tests_gen.normalize("   ")
-except ValueError as exc:
-    print(f"rejected: {exc}")
+spec = load_spec(Path("openapi.yaml"))
+cases = extract_cases(spec)
+source = render_module(cases, spec_sha256="0" * 64)
+Path("test_contract.py").write_text(source, encoding="utf-8")
+print(len(cases), "contract tests generated")
 ```
+
+## Public API
+
+- `load_spec(path, *, max_bytes=10_485_760) -> dict`: reads at most `max_bytes + 1` bytes; accepts JSON or YAML with OpenAPI 3.0.x or 3.1.x; resolves local `$ref` only.
+- `extract_cases(spec, *, include_tags=None) -> list[ContractCase]`: one case per operation and documented 2xx response; at most 5000 cases.
+- `render_module(cases, *, spec_sha256, base_url_env='CONTRACT_BASE_URL', auth_env='CONTRACT_AUTH_HEADER') -> str`: renders pytest source with a do-not-edit header.
+- `validate_instance(instance, schema) -> list[str]`: validates against a JSON Schema subset (type, required, properties, additionalProperties false, items, enum, nullable, minimum, maximum, minLength, maxLength, oneOf, anyOf). `format` is ignored.
+- `Transport` (Protocol) and `UrllibTransport(timeout=10.0, max_body_bytes=10_485_760)`: http and https only; never follows redirects; reads at most `max_body_bytes + 1`.
+- `ContractGenError`: carries `code` in `invalid_spec`, `unsupported_version`, `too_large`, `too_deep`, `unresolved_ref`, `unsupported_scheme`.
+- CLI: `contract-tests-gen <spec> -o <file> [--tag TAG ...] [--check]`; exit 0 written or up to date, 1 drift, 2 errors.
+
+Limits: no fuzzing, no stateful or authentication flows, no response header checks, no full JSON Schema support. Generated tests read the base URL from `CONTRACT_BASE_URL` and skip when it is unset; the transport can be overridden with a `contract_transport` fixture.
+
+See [docs/SECURITY.md](docs/SECURITY.md) for the threat model.
 
 ## Documentation
 
