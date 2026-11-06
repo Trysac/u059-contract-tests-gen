@@ -9,4 +9,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add contract-tests-gen: generate injection-safe pytest contract tests from OpenAPI 3.0/3.1 documents, with a runtime schema validator, injectable no-redirect transport and a `--check` drift mode.
 - Initial project structure from the factory utility template.

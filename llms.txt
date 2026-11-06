@@ -1,16 +1,16 @@
 # contract-tests-gen
 
-> Generate readable pytest contract tests from an OpenAPI 3.x document, injection-safe, with a small schema validator, injectable transport and drift check Python package `trysac-contract-tests-gen`, import name `contract_tests_gen`, MIT licensed,
-> Python >= 3.10, no runtime dependencies.
+> Generate readable pytest contract tests from an OpenAPI 3.x document, injection-safe, with a small schema validator, injectable transport and drift check. Python package `trysac-contract-tests-gen`, import name `contract_tests_gen`, MIT licensed, Python >= 3.10, runtime dependency PyYAML only.
 
 ## Docs
 
-- [README](README.md): problem, install, usage example
-- [AGENTS](AGENTS.md): commands, folder map, conventions, limits
+- [README](README.md): problem, install, usage example, public API
 - [Architecture](docs/ARCHITECTURE.md): shape of the package and its public API
 - [Testing](docs/TESTING.md): how to run and extend the tests
+- [Security](docs/SECURITY.md): threat model
 
 ## Optional
 
 - [Stack](docs/STACK.md): tools used and discarded
+- [Project](docs/PROJECT.md): objective and scope
 - [Changelog](CHANGELOG.md): release history
