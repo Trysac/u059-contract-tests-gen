@@ -1,7 +1,6 @@
 # contract-tests-gen
 
-[![PyPI version](https://img.shields.io/pypi/v/trysac-contract-tests-gen)](https://pypi.org/project/trysac-contract-tests-gen/)
-[![License: MIT](https://img.shields.io/pypi/l/trysac-contract-tests-gen)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI](https://github.com/Trysac/u059-contract-tests-gen/actions/workflows/ci.yml/badge.svg)](https://github.com/Trysac/u059-contract-tests-gen/actions/workflows/ci.yml)
 
 Generate readable pytest contract tests from an OpenAPI 3.x document, injection-safe, with a small schema validator, injectable transport and drift check.
@@ -12,10 +11,12 @@ Contract drift between an API and its OpenAPI document is usually discovered by 
 
 ## Install
 
+Not published to PyPI yet. Install it from GitHub:
+
 ```sh
-pip install trysac-contract-tests-gen
+pip install "git+https://github.com/Trysac/u059-contract-tests-gen"
 # or
-uv add trysac-contract-tests-gen
+uv add "git+https://github.com/Trysac/u059-contract-tests-gen"
 ```
 
 Requires Python 3.10 or newer. Runtime dependency: PyYAML >= 6.0, < 7.
